@@ -21,8 +21,11 @@ public class Function
 
         try
         {
-            //var secret = Environment.GetEnvironmentVariable("JWT_SECRET"); // ou buscar no Parameter Store
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SECRET_SECRETA_AQUI_7DFS78DFYFDSH7DFSHDFS7DFSD7FSHFDS87FHD"));
+            var secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "";
+            string issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "";
+            string audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "";
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -30,9 +33,9 @@ public class Function
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = key,
                 ValidateIssuer = true,
-                ValidIssuer = "JWT_ISSUER",
+                ValidIssuer = issuer,
                 ValidateAudience = true,
-                ValidAudience = "JWT_AUDIENCE",
+                ValidAudience = audience,
                 ValidateLifetime = true,
             }, out SecurityToken validatedToken);
 
